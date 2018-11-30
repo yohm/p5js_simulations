@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.4/seedrandom.min.js"></script>
+    <script src="./sketch.js"></script>
+    <script type="text/javascript">
+      function init_i_Update(num) {
+        document.querySelector('#init_i_text').value = num;
+      }
+    </script>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="../../top.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  </head>
+  <body>
+    <header>
+      <h1>炎上シミュレーター</h1>
+    </header>
+
+    <main>
+      <article>
+        <p>
+        最初にツイートした人数によって結果がどう変わるか見てみよう！
+        周りの友人がたくさんツイートしていると自分もツイートします。
+        </p>
+        <div id='modelParameters'>
+          <label for="param_init_i">最初にツイートした人数</label>
+          <input type="range" min="10" max="100" step="10" value="10" id="param_init_i" oninput="init_i_Update(value)" />
+          <output id="init_i_text">10</output>人
+          <br />
+          <button id="start_button" class="button"><i class="fa fa-play"></i> 実行する</button>
+          <br />
+          ツイートした人数 : 1000人中 
+          <output id="num_i" ></output>人
+        </div>
+        <div id='modelContainer'></div>
+      </article>
+      <a href="/">トップに戻る</a>
+    </main>
+  </body>
+</html>
+
