@@ -14,6 +14,8 @@ var s = function(p) {
   
     lattice = new Percolation(params.L, params.L);
     p.noLoop();
+    p.stroke(200);
+    p.strokeWeight(0.8);
 
     var slider = p.select("#param_p");
     slider.changed( () => {
