@@ -133,12 +133,6 @@ h3 {
   font-size: large;
 }
 
-p.acknowledgment {
-  text-indent: 0em;
-  text-align: right;
-  font-size: xx-small;
-}
-
 ul li { margin: 0.5em 0; }
 
 div#modelParameters, div.simulation {
@@ -146,18 +140,3 @@ div#modelParameters, div.simulation {
   margin: auto;
 }
 
-.button {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 8px 10px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  border-radius: 8px;
-}
-button[disabled] {
-  opacity: 0.6;
-  cursor: not-allowed;
-}

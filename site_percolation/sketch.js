@@ -13,6 +13,14 @@ var s = function(p) {
     p.createCanvas(canvas_s.x, canvas_s.y);
   
     lattice = new Percolation(params.L, params.L);
+    p.noLoop();
+
+    var slider = p.select("#param_p");
+    slider.changed( () => {
+      console.log(slider.value());
+      lattice.refresh_sites( slider.value()/100.0 );
+      p.redraw();
+    });
   }
 
   p.draw = function() {
@@ -42,9 +50,6 @@ var s = function(p) {
       }
 
       this.refresh_sites(0.3);
-      this.connected_component_labeling();
-      this.largest_l = this.find_largest_connected_component();
-      console.log(this.largest_l);
 
       this.colors = Array(10);
       for( var i=0; i<this.colors.length; i++ ) {
@@ -58,6 +63,8 @@ var s = function(p) {
           this.sites[y][x] = ( this.rs[y][x] < th ) ? -1 : 0;
         }
       }
+      this.connected_component_labeling();
+      this.largest_l = this.find_largest_connected_component();
     }
 
     connected_component_labeling() {
@@ -70,15 +77,23 @@ var s = function(p) {
     }
 
     labeling(x, y, l) {
-      this.sites[y][x] = l;
-      let right = (x+1)%this.lx
-      if( this.sites[y][right] == -1 ) { this.labeling(right, y, l); }
-      let left = (x-1+this.lx)%this.lx;
-      if( this.sites[y][left] == -1 ) { this.labeling(left, y, l); }
-      let top = (y+1)%this.ly;
-      if( this.sites[top][x] == -1 ) { this.labeling(x, top, l); }
-      let bottom = (y-1+this.ly)%this.ly;
-      if( this.sites[bottom][x] == -1 ) { this.labeling(x, bottom, l); }
+      var q = [];
+      let traverse_neighbors = (x,y) => {
+        this.sites[y][x] = l;
+        let right = (x+1)%this.lx
+        if( this.sites[y][right] == -1 ) { q.push( [right,y] ); }
+        let left = (x-1+this.lx)%this.lx;
+        if( this.sites[y][left] == -1 ) { q.push( [left,y] ); }
+        let top = (y+1)%this.ly;
+        if( this.sites[top][x] == -1 ) { q.push( [x,top] ); }
+        let bottom = (y-1+this.ly)%this.ly;
+        if( this.sites[bottom][x] == -1 ) { q.push( [x,bottom] ); }
+      }
+      traverse_neighbors(x, y);
+      while( q.length > 0 ) {
+        let xy = q.pop();
+        traverse_neighbors( xy[0], xy[1] );
+      }
     }
 
     find_largest_connected_component() {
