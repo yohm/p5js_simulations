@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="sketch.js"></script>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="toggle.css"/>
+    <link rel="stylesheet" type="text/css" href="top.css"/>
+  </head>
+  <body>
+    <header>
+      <h1>群れのシミュレーション</h1>
+    </header>
+
+    <main>
+      <article>
+        <p>鳥や魚の群れは不思議な動きをします。どうしてこんな動きをするんでしょうか？</p>
+        <div style="text-align: center;">
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/bb9ZTbYGRdc?rel=0" frameborder="0"></iframe>
+        </div>
+        <p>それぞれの鳥がどんなふうに振る舞うと、群れの動きがどう変わっていくかシミュレーションで試してみよう</p>
+        <div id='modelParameters'>
+          <label class="switch">
+            <input id="check_cohesion" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+          近くの群れに集まれ
+          <br />
+          <label class="switch">
+            <input id="check_separation" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+          ぶつからないように離れろ
+          <br />
+          <label class="switch">
+            <input id="check_align" type="checkbox">
+            <span class="slider round"></span>
+          </label>
+          周りと向きを揃えろ
+        </div>
+        <div id='boidModelContainer'></div>
+      </article>
+      <a href="/">トップに戻る</a>
+    </main>
+  </body>
+</html>
+
