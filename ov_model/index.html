@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="sketch.js"></script>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="./top.css"/>
+  </head>
+  <body>
+    <header>
+      <h1>渋滞シミュレーター</h1>
+    </header>
+
+    <main>
+      <article>
+        <p>あなたは運送業者の社長です。倉庫からお店までトラックで荷物を運びます。何台のトラックを使って運ぶと一番たくさん運べるかシミュレーションしてみよう</p>
+        <div id='modelParameters'>
+          <label for="param_numcar">トラックの台数<label>
+          <input type="range" min="1" max="15" step="1" id="param_numcar" />
+          <output id="param_numcar_text"/></output>台
+          <br />
+          <label for="traffic_flow">１時間に運ぶ量<label>
+          <output id="traffic_flow"/>
+        </div>
+        <div id='ovModelContainer'></div>
+        <p>ヒント：トラックの運転手は前の車にぶつからないようにブレーキをかけるよ。トラックが多すぎるとどうなるかな？</p>
+      </article>
+      <a href="/">トップに戻る</a>
+    </main>
+  </body>
+</html>
