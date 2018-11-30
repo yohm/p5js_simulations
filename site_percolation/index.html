@@ -20,7 +20,7 @@
 
     <main>
       <article>
-        <p>格子点に確率pでランダムに点を打ちます。隣同士繋がると色がつきます。pと共に接続箇所の大きさはどのように変わるでしょう？</p>
+        <p>格子点に確率pでランダムに点を打ちます。隣同士繋がっている要素（連結成分）には同じ色がつきます。最大連結成分は黒で描画されます。pと共に連結成分の大きさはどのように変わるでしょう？</p>
         <div id='modelParameters'>
           <label for="param_p">p</label>
           <input type="range" min="0" max="100" step="1" value="30" id="param_p" style="width: 85%;" oninput="p_Update(value)" />
