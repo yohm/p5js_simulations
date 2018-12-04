@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.4/seedrandom.min.js"></script>
+    <script src="sketch.js"></script>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="top.css"/>
+    <script type="text/javascript">
+      function p_Update(num) {
+        document.querySelector('#param_p_text').value = num / 100.0;
+      }
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Bak-Sneppen model</h1>
+    </header>
+
+    <main>
+      <article>
+        <p>Simulating Bak-Sneppen model. Each bar denotes a species fitness. A species having the minimal fitness is removed together with its neighboring species.
+        They are replaced by new species having fitnesses randomly drawn from the uniform distribution.</p>
+        <p> The system evolves to a self-organized critical (SOC) state, where scale-free avalanches of extinctions occur.</p>
+        <div id='modelParameters'>
+          <label># of consecutive extinctions :</label>
+          <output id="avalanche">0</output>
+        </div>
+        <div class='simulation' id='bsContainer'></div>
+      </article>
+      <a href="/">トップに戻る</a>
+    </main>
+  </body>
+</html>
+
