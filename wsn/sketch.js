@@ -8,20 +8,27 @@ const s = (p) => {
     Rect = toxi.geom.Rect;
 
   const options = {
-    numNodes: 10,
-    particleRadius: 4,
-    linkStrokeWeight: 1,
+    numNodes: 200,
     springStrength: 0.01,
-    springLength: 50,
-    minDistanceSpringStrength: 0.05,
-    minDistanceSpringLength: 30,
+    springLength: 44,
+    minDistanceSpringStrength: 0.1,
+    minDistanceSpringLength: 55,
+    display: {
+      nodeColor: "#555555",
+      nodeStrokeWeight: 0,
+      nodeRadius: 2,
+      linkColors: ["#CBE6F3", "#FFF280", "#E06A3B"].map(s=> p.color(s)),
+      linkStrokeWeight: 0.25,
+      linkMidWeight: 200
+    }
   };
 
-  const canvas_s = {x: 640, y:640}; // canvas size
+  const canvas_s = {x: 720, y:720}; // canvas size
 
   let wsn,net,physics;
 
   p.setup = () => {
+    p.frameRate(15);
     p.createCanvas(canvas_s.x, canvas_s.y);
     physics = new VerletPhysics2D();
     physics.setWorldBounds(new Rect(10, 10, canvas_s.x-20, canvas_s.y-20));
@@ -39,33 +46,21 @@ const s = (p) => {
     physics.clear();
     const n = options.numNodes;
     net = new Network(n);
-    /*
-    for(let i=0; i<n/2; i++) {
-      for(let j=i+1; j<n/2; j++) {
-        net.add_link( i, j );
-      }
-    }
-    for(let i=n/2; i<n; i++) {
-      for(let j=i+1; j<n; j++) {
-        net.add_link( i, j );
-      }
-    }
-    net.add_link( n/2-1, n/2, 100 );
-    net.remove_link( 3, 4 );
-    net.remove_link( 3, 1 );
-    net.remove_link( 3, 2 );
-    */
   }
   p.draw = () => {
-    wsn.update();
-    physics.update();
+    for(let f=0; f<3; f++) {
+      for(let i=0; i<5; i++) {
+        wsn.update();
+      }
+      physics.update();
+    }
     p.background(255);
     
     net.display();
   }
 
   class WSN {
-    constructor(net, p_la=0.05, p_ga=0.0005, p_ld=0.001) {
+    constructor(net, p_la=0.05, p_ga=0.0005, p_ld=0.0035) {
       this.net = net;
       this._p_la = p_la;
       this._p_ga = p_ga;
@@ -76,19 +71,10 @@ const s = (p) => {
       this.net.for_each_node( (n) => {
         this._LA(n);
       });
-      if( ! net._is_consistent() ) {
-        throw new Error("must not happen");
-      }
       this.net.for_each_node( (n) => {
         this._GA(n);
       });
-      if( ! net._is_consistent() ) {
-        throw new Error("must not happen");
-      }
       this._LD();
-      if( ! net._is_consistent() ) {
-        throw new Error("must not happen");
-      }
     }
 
     _LA(ni) {
@@ -191,9 +177,9 @@ const s = (p) => {
     }
 
     display() {
-      p.fill(0, 150);
-      p.stroke(0);
-      p.ellipse(this.x, this.y, options.particleRadius, options.particleRadius);
+      p.fill(options.display.nodeColor);
+      p.stroke(options.display.nodeStrokeWeight);
+      p.ellipse(this.x, this.y, options.display.nodeRadius, options.display.nodeRadius);
     }
   }
 
@@ -214,9 +200,22 @@ const s = (p) => {
     update_weight(w) { this.w = w; this._update_spring(); }
 
     display() {
-      p.stroke(0, 150);
-      p.strokeWeight(options.linkStrokeWeight*Math.log(this.w+1));
+      const c = this._calc_color();
+      p.stroke(c);
+      p.strokeWeight(options.display.linkStrokeWeight*Math.log(this.w+1));
       p.line(this.n1.x, this.n1.y, this.n2.x, this.n2.y);
+    }
+
+    _calc_color() {
+      const w_m = options.display.linkMidWeight;
+      if(this.w < w_m) {
+        const w = this.w / w_m;
+        return p.lerpColor( options.display.linkColors[0], options.display.linkColors[1], w )
+      }
+      else {
+        const w = (this.w-w_m) / w_m;
+        return p.lerpColor( options.display.linkColors[1], options.display.linkColors[2], w )
+      }
     }
   }
 
