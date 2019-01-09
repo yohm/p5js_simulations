@@ -60,11 +60,12 @@ const s = (p) => {
   }
 
   class WSN {
-    constructor(net, p_la=0.05, p_ga=0.0005, p_ld=0.0035) {
+    constructor(net, p_la=0.05, p_ga=0.0005, p_ld=0.0035, p_nd=0.001) {
       this.net = net;
       this._p_la = p_la;
       this._p_ga = p_ga;
       this._p_ld = p_ld;
+      this._p_nd = p_nd;
     }
 
     update() {
@@ -75,6 +76,9 @@ const s = (p) => {
         this._GA(n);
       });
       this._LD();
+      this.net.for_each_node( (n) => {
+        this._ND(n);
+      });
     }
 
     _LA(ni) {
@@ -145,6 +149,12 @@ const s = (p) => {
         this.net.remove_link( ij[0], ij[1] );
       }
     }
+
+    _ND(ni) {
+      if( Math.random() < this._p_nd ) {
+        this.net.remove_links_around_node(ni.id);
+      }
+    }
   }
 
   class Node extends VerletParticle2D {
@@ -159,6 +169,7 @@ const s = (p) => {
       this._edges.set(other_node.id, link);
     }
     _delete_edge(other) { this._edges.delete(other.id); }
+    _delete_edge_all() { this._edges = new Map(); }
 
     for_each_neighbor(fn) {
       for(let [id,link] of this._edges) { fn(id,link); }
@@ -283,6 +294,24 @@ const s = (p) => {
       physics.removeSpring(l);
       this._attach_repulsion_spring(n1,n2);
       this._links = this._links.filter( (x)=> x !== l );
+      // if( ! this._is_consistent() ) {
+      //   throw new Error("must not happen");
+      // }
+    }
+
+    remove_links_around_node(i) {
+      const ni = this.node(i);
+      const removing_links = [];
+      ni.for_each_neighbor( (j,l) => {
+        const nj = this.node(j);
+        nj._delete_edge(ni);
+        removing_links.push(l);
+        physics.removeSpring(l);
+        this._attach_repulsion_spring(ni,nj);
+      });
+      this._links = this._links.filter( (l) => !removing_links.includes(l) )
+      ni._delete_edge_all();
+
       // if( ! this._is_consistent() ) {
       //   throw new Error("must not happen");
       // }
