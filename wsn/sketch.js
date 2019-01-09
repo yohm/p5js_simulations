@@ -8,18 +8,26 @@ const s = (p) => {
     Rect = toxi.geom.Rect;
 
   const options = {
-    numNodes: 200,
-    springStrength: 0.01,
-    springLength: 44,
-    minDistanceSpringStrength: 0.1,
-    minDistanceSpringLength: 55,
+    network: {
+      num_nodes: 200,
+      p_la: 0.05,
+      p_ga: 0.0005,
+      p_ld: 0.003,
+      p_nd: 0.001
+    },
+    physics: {
+      spring_strength: 0.01,
+      spring_length: 44,
+      min_distance_spring_strength: 0.1,
+      min_distance_spring_length: 55,
+    },
     display: {
-      nodeColor: "#555555",
-      nodeStrokeWeight: 0,
-      nodeRadius: 2,
-      linkColors: ["#CBE6F3", "#FFF280", "#E06A3B"].map(s=> p.color(s)),
-      linkStrokeWeight: 0.25,
-      linkMidWeight: 200
+      node_color: "#555555",
+      node_stroke_weight: 0,
+      node_radius: 2,
+      link_colors: ["#CBE6F3", "#FFF280", "#E06A3B"].map(s=> p.color(s)),
+      link_stroke_weight: 0.25,
+      link_mid_weight: 200
     }
   };
 
@@ -44,7 +52,7 @@ const s = (p) => {
 
   const makeGraph = () => {
     physics.clear();
-    const n = options.numNodes;
+    const n = options.network.num_nodes;
     net = new Network(n);
   }
   p.draw = () => {
@@ -60,12 +68,8 @@ const s = (p) => {
   }
 
   class WSN {
-    constructor(net, p_la=0.05, p_ga=0.0005, p_ld=0.0035, p_nd=0.001) {
+    constructor(net) {
       this.net = net;
-      this._p_la = p_la;
-      this._p_ga = p_ga;
-      this._p_ld = p_ld;
-      this._p_nd = p_nd;
     }
 
     update() {
@@ -97,7 +101,7 @@ const s = (p) => {
         l_ik.update_weight( l_ik.w + 1 );
       }
       else {
-        if( Math.random() < this._p_la ) {
+        if( Math.random() < options.network.p_la ) {
           this.net.add_link(ni.id, nk.id, 1);
         }
       }
@@ -128,7 +132,7 @@ const s = (p) => {
     }
 
     _GA(ni) {
-      if( ni.degree() > 0 && Math.random() > this._p_ga ) { return; }
+      if( ni.degree() > 0 && Math.random() > options.network.p_ga ) { return; }
       const n = this.net.size();
       let j = Math.floor( Math.random() * (n-1) );
       if( j >= ni.id ) { j += 1; }
@@ -141,7 +145,7 @@ const s = (p) => {
     _LD() {
       const removing_links = [];
       this.net.for_each_link( (l) => {
-        if( Math.random() < this._p_ld ) {
+        if( Math.random() < options.network.p_ld ) {
           removing_links.push( [l.n1.id, l.n2.id] );
         }
       });
@@ -151,7 +155,7 @@ const s = (p) => {
     }
 
     _ND(ni) {
-      if( Math.random() < this._p_nd ) {
+      if( Math.random() < options.network.p_nd ) {
         this.net.remove_links_around_node(ni.id);
       }
     }
@@ -188,15 +192,15 @@ const s = (p) => {
     }
 
     display() {
-      p.fill(options.display.nodeColor);
-      p.stroke(options.display.nodeStrokeWeight);
-      p.ellipse(this.x, this.y, options.display.nodeRadius, options.display.nodeRadius);
+      p.fill(options.display.node_color);
+      p.stroke(options.display.node_stroke_weight);
+      p.ellipse(this.x, this.y, options.display.node_radius, options.display.node_radius);
     }
   }
 
   class Link extends VerletSpring2D {
     constructor(ni, nj, weight) {
-      super(ni, nj, options.springLength, options.springStrength);
+      super(ni, nj, options.physics.spring_length, options.physics.spring_strength);
       if(ni.id < nj.id) { this.n1 = ni; this.n2 = nj; }
       else { this.n1 = nj; this.n2 = ni; }
       this.w = weight;
@@ -204,7 +208,7 @@ const s = (p) => {
     }
 
     _update_spring() {
-      const s = options.springStrength * Math.log(this.w+1);
+      const s = options.physics.spring_strength * Math.log(this.w+1);
       this.setStrength(s);
     }
 
@@ -213,19 +217,19 @@ const s = (p) => {
     display() {
       const c = this._calc_color();
       p.stroke(c);
-      p.strokeWeight(options.display.linkStrokeWeight*Math.log(this.w+1));
+      p.strokeWeight(options.display.link_stroke_weight*Math.log(this.w+1));
       p.line(this.n1.x, this.n1.y, this.n2.x, this.n2.y);
     }
 
     _calc_color() {
-      const w_m = options.display.linkMidWeight;
+      const w_m = options.display.link_mid_weight;
       if(this.w < w_m) {
         const w = this.w / w_m;
-        return p.lerpColor( options.display.linkColors[0], options.display.linkColors[1], w )
+        return p.lerpColor( options.display.link_colors[0], options.display.link_colors[1], w )
       }
       else {
         const w = (this.w-w_m) / w_m;
-        return p.lerpColor( options.display.linkColors[1], options.display.linkColors[2], w )
+        return p.lerpColor( options.display.link_colors[1], options.display.link_colors[2], w )
       }
     }
   }
@@ -246,7 +250,7 @@ const s = (p) => {
     }
 
     _attach_repulsion_spring(ni, nj) {
-      const repulsion = new VerletMinDistanceSpring2D(ni,nj, options.minDistanceSpringLength, options.minDistanceSpringStrength);
+      const repulsion = new VerletMinDistanceSpring2D(ni,nj, options.physics.min_distance_spring_length, options.physics.min_distance_spring_strength);
       physics.addSpring(repulsion);
     }
 
