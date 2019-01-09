@@ -43,11 +43,20 @@ const s = (p) => {
     makeGraph();
     wsn = new WSN(net);
 
-    const check = p.select("#simulationUpdate");
-    check.changed( () => {
-      if( check.checked() ) { p.loop(); }
-      else { p.noLoop(); }
-    });
+    { // setting callbacks
+      const check = p.select("#simulationUpdate");
+      check.changed( () => {
+        if( check.checked() ) { p.loop(); }
+        else { p.noLoop(); }
+      });
+      const slider = p.select("#param_p_la");
+      slider.changed( () => {
+        console.log(slider.value());
+        options.network.p_la = slider.value()/1000.0;
+        p.select("#param_p_la_text").value(options.network.p_la);
+      });
+
+    }
   }
 
   const makeGraph = () => {
