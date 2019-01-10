@@ -1,0 +1,171 @@
+* {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+article, main, aside, figcaption, figure, footer, header, nav, section {
+  display: block;
+}
+
+html {
+  background: #efefef;
+  color: #000000;
+}
+
+body {
+  background-color: #ffffff;
+  padding: 2em 0 0;
+}
+
+@media screen and (min-width: 65em) {
+  body {
+    max-width: 60em;
+    border-width: 0 1px;
+    border-style: dotted;
+    border-color: #880000;
+    margin: 0 auto;
+    padding: 2em 0 0 0;
+  }
+}
+
+@media handheld, print {
+  body {
+    border-width: 0;
+    border-style: none;
+    margin: 0;
+  }
+}
+
+ul {
+  list-style-position: inside;
+}
+
+li ul { margin-left: 1em; }
+
+a { 
+  text-decoration: none;
+  border-radius: 0.5em;
+}
+
+a:hover, a:active {
+  text-decoration: none;
+  background-color: #bfffff; 
+}
+a:link {}
+a:visited {}
+
+p {
+  text-indent: 1em;
+}
+
+/* Header */
+header {
+  border-width: 0 0 3px 0;
+  border-style: solid;
+  border-color: #aa0000;
+  padding: 0 0.5em 1em;
+  margin: 0 2em;
+}
+
+h1 {
+  display: block;
+  font-size: 250%;
+  font-variant: small-caps;
+  font-weight: normal;
+  text-align: center;
+}
+
+h1#title {
+}
+
+@media print {
+  header {
+    border: none;
+    padding: 0 0.5em 1em;
+    margin: 0;
+  }
+
+  h1#title {
+    display: block;
+    font-size: xx-large;
+    font-variant: small-caps;
+    font-weight: normal;
+    text-align: center;
+  }
+}
+
+
+main {
+  padding: 1em 4em 3em;
+}
+
+main > article { margin-top: 1.5em; }
+main > section { margin-top: 3.0em; }
+main > article:first-child { margin-top: 0; }
+
+article { margin: 3.0em 0; }
+
+article p, article dl, article ul, article ol {
+  margin: 0.5em 1.0em;
+}
+
+h2 {
+  color: #000000;
+  background-color: #ffffff;
+  border-width: 0 0 1px 15px;
+  border-style: solid;
+  border-color: #aa0000;
+  padding: 0 0 0 15px;
+  margin: 0.3em 0 0.5em 0;
+  font-size: x-large;
+  font-weight: normal;
+}
+
+section { margin: 2.0em 0; }
+
+h3 {
+  color: #000000;
+  background-color: #ffffff;
+  font-style: solid;
+  padding: 0 0 0 15px;
+  margin: 5px 0;
+  font-size: large;
+}
+
+p.acknowledgment {
+  text-indent: 0em;
+  text-align: right;
+  font-size: xx-small;
+}
+
+ul li { margin: 0.5em 0; }
+
+div#modelParameters, div#modelContainer {
+  width: 80%;
+  margin: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+div#modelParameters label {
+  display: block;
+  float: left;
+  width: 55px;
+}
+
+.button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 8px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 8px;
+}
+button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

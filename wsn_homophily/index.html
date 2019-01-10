@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/p5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/seedrandom/2.4.4/seedrandom.min.js"></script>
+    <script src="./toxiclibs.min.js"></script>
+    <script src="./sketch.js"></script>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="./top.css"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  </head>
+  <body>
+    <header>
+      <h1>Social Network Simulator</h1>
+    </header>
+
+    <main>
+      <article>
+        <p>
+          A simulator of Weighted Social Network Model
+        </p>
+        <div id='modelParameters'>
+          <label for="param_p_ga">p_GA</label>
+          <input type="range" min="1" max="10" step="1" value="5" id="param_p_ga" style="width: 60%;" />
+          <output id="param_p_ga_text"></output><br/>
+          <label for="param_p_la">p_LA</label>
+          <input type="range" min="0" max="200" step="5" value="50" id="param_p_la" style="width: 60%;" />
+          <output id="param_p_la_text"></output><br/>
+          <label for="param_dw">dw</label>
+          <input type="range" min="0" max="10" step="1" value="10" id="param_dw" style="width: 60%;" />
+          <output id="param_dw_text"></output><br/>
+          <label for="param_ld">p_LD</label>
+          <input type="range" min="0" max="50" step="5" value="30" id="param_ld" style="width: 60%;" />
+          <output id="param_ld_text"></output><br/>
+          <label for="param_nd">p_ND</label>
+          <input type="range" min="0" max="20" step="2" value="0" id="param_nd" style="width: 60%;" />
+          <output id="param_nd_text"></output><br/>
+          <label for="param_aging">aging</label>
+          <input type="range" min="0" max="10" step="2" value="0" id="param_aging" style="width: 60%;" />
+          <output id="param_aging_text"></output><br/>
+          <label for="param_q">q</label>
+          <input type="range" min="1" max="4" step="1" value="2" id="param_q" style="width: 60%;" />
+          <output id="param_q_text"></output><br/>
+          <label for="param_F">F</label>
+          <input type="range" min="1" max="4" step="1" value="2" id="param_F" style="width: 60%;" />
+          <output id="param_F_text"></output><br/>
+
+          <button id="start_button" class="button" style="width: 100px;"><i class="fa fa-play"></i>Start</button>
+          <button id="reset_button" class="button" style="width: 100px;"><i class="fa fa-refresh"></i>Reset</button>
+          <span id="running_status" style="margin:10px"></span>
+        </div>
+        <div id='modelContainer'></div>
+      </article>
+      <a href="..">Back</a>
+    </main>
+  </body>
+</html>
+
