@@ -13,7 +13,8 @@ const s = (p) => {
       p_la: 0.05,
       p_ga: 0.0005,
       p_ld: 0.003,
-      p_nd: 0.001
+      p_nd: 0.001,
+      dw: 1
     },
     physics: {
       spring_strength: 0.01,
@@ -31,7 +32,7 @@ const s = (p) => {
     }
   };
 
-  const canvas_s = {x: 720, y:720}; // canvas size
+  const canvas_s = {x: 640, y:640}; // canvas size
 
   let wsn,net,physics;
 
@@ -44,16 +45,47 @@ const s = (p) => {
     wsn = new WSN(net);
 
     { // setting callbacks
-      const check = p.select("#simulationUpdate");
-      check.changed( () => {
-        if( check.checked() ) { p.loop(); }
-        else { p.noLoop(); }
+      {
+        const btn = p.select("#start_button");
+        const stat = p.select("#running_status");
+        let running = false;
+        const onclicked = () => {
+          if(running) {
+            btn.html('<i class="fa fa-play"></i>start');
+            running = false;
+            stat.html('')
+            p.noLoop();
+          }
+          else {
+            btn.html('<i class="fa fa-pause"></i>pause');
+            running = true;
+            stat.html('<i class="fa fa-spinner fa-spin"></i>')
+            p.loop();
+          }
+        }
+        btn.mouseClicked( onclicked );
+        onclicked();
+      }
+      const link_param = (slider_selector, text_selector, parse_param) => {
+        const slider = p.select(slider_selector);
+        const on_changed = () => { p.select(text_selector).value(parse_param(slider.value())); };
+        slider.changed(on_changed);
+        on_changed()
+      }
+      link_param("#param_p_la", "#param_p_la_text", (v) => {
+        return (options.network.p_la = v / 1000.0);
       });
-      const slider = p.select("#param_p_la");
-      slider.changed( () => {
-        console.log(slider.value());
-        options.network.p_la = slider.value()/1000.0;
-        p.select("#param_p_la_text").value(options.network.p_la);
+      link_param("#param_p_ga", "#param_p_ga_text", (v) => {
+        return (options.network.p_ga = v / 10000.0);
+      });
+      link_param("#param_dw", "#param_dw_text", (v) => {
+        return (options.network.dw = v / 10);
+      });
+      link_param("#param_ld", "#param_ld_text", (v) => {
+        return (options.network.p_ld = v / 10000);
+      });
+      link_param("#param_nd", "#param_nd_text", (v) => {
+        return (options.network.p_nd = v / 10000);
       });
 
     }
@@ -95,19 +127,20 @@ const s = (p) => {
     }
 
     _LA(ni) {
+      const dw = options.network.dw;
       if( ni.degree() === 0 ) { return; }
       const l_ij = this._edge_selection(ni, null);
-      l_ij.update_weight( l_ij.w + 1 );
+      l_ij.update_weight( l_ij.w + dw );
   
       const nj = (l_ij.n1.id === ni.id) ? l_ij.n2 : l_ij.n1;
       if( nj.degree() === 1 ) { return; }
       const l_jk = this._edge_selection(nj, ni);
-      l_jk.update_weight( l_jk.w + 1 );
+      l_jk.update_weight( l_jk.w + dw );
   
       const nk = (l_jk.n1.id === nj.id) ? l_jk.n2 : l_jk.n1;
       const l_ik = ni.get_link(nk);
       if( l_ik ) {
-        l_ik.update_weight( l_ik.w + 1 );
+        l_ik.update_weight( l_ik.w + dw );
       }
       else {
         if( Math.random() < options.network.p_la ) {

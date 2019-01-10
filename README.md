@@ -1,11 +1,16 @@
-# p5js_simulations
+# Simulation Demos
+
 A collection of simulation demos using p5.js.
 
 - Traffic simulation : Optimal-Velocity model
-    - https://yohm.github.io/p5js_simulations/ov_model
+    - [ov model](https://yohm.github.io/p5js_simulations/ov_model/)
 - Boid simulation
-    - https://yohm.github.io/p5js_simulations/boid
+    - [boid simulation](https://yohm.github.io/p5js_simulations/boid/)
 - Social contagion model (threshold model proposed by Watts)
-    - https://yohm.github.io/p5js_simulations/watts_model
+    - [social contagion](https://yohm.github.io/p5js_simulations/watts_model/)
+- Site Percolation
+    - [site percolation](https://yohm.github.io/p5js_simulations/site_percolation/)
 - Bak-Sneppen model
-    - https://yohm.github.io/p5js_simulations/bak_sneppen/
+    - [Bak-Sneppen model](https://yohm.github.io/p5js_simulations/bak_sneppen/)
+- Weighted Social Network model
+    - [WSN model](https://yohm.github.io/p5js_simulations/wsn/)

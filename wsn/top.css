@@ -141,9 +141,11 @@ p.acknowledgment {
 
 ul li { margin: 0.5em 0; }
 
-div#modelParameters, div#ovModelContainer, div#boidModelContainer, div#modelContainer {
+div#modelParameters, div#modelContainer {
   width: 80%;
   margin: auto;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 
 .button {
