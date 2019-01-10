@@ -15,5 +15,3 @@ A collection of simulation demos using p5.js.
 - Weighted Social Network model
     - [WSN model](/p5js_simulations/wsn/)
 
-[Back to Top](/)
-
