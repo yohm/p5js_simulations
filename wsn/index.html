@@ -36,9 +36,12 @@
           <label for="param_nd">p_ND</label>
           <input type="range" min="0" max="20" step="2" value="0" id="param_nd" style="width: 60%;" />
           <output id="param_nd_text"></output><br/>
+          <label for="param_aging">aging</label>
+          <input type="range" min="0" max="10" step="2" value="0" id="param_aging" style="width: 60%;" />
+          <output id="param_aging_text"></output><br/>
 
           <button id="start_button" class="button" style="width: 100px;"><i class="fa fa-play"></i>Start</button>
-          <button id="refresh_button" class="button" style="width: 100px;"><i class="fa fa-refresh"></i>Reset</button>
+          <button id="reset_button" class="button" style="width: 100px;"><i class="fa fa-refresh"></i>Reset</button>
           <span id="running_status" style="margin:10px"></span>
         </div>
         <div id='modelContainer'></div>

@@ -14,7 +14,8 @@ const s = (p) => {
       p_ga: 0.0005,
       p_ld: 0.003,
       p_nd: 0.001,
-      dw: 1
+      dw: 1,
+      aging: 1
     },
     physics: {
       spring_strength: 0.01,
@@ -41,7 +42,7 @@ const s = (p) => {
     p.createCanvas(canvas_s.x, canvas_s.y);
     physics = new VerletPhysics2D();
     physics.setWorldBounds(new Rect(10, 10, canvas_s.x-20, canvas_s.y-20));
-    makeGraph();
+    net = new Network(options.network.num_nodes);
     wsn = new WSN(net);
 
     { // setting callbacks
@@ -65,6 +66,19 @@ const s = (p) => {
         }
         btn.mouseClicked( onclicked );
         onclicked();
+
+        const rbtn = p.select("#reset_button");
+        rbtn.mouseClicked( () => {
+          p.noLoop();
+          net.clear_links();
+          wsn = new WSN(net);
+          if(running) {
+            p.loop();
+          }
+          else {
+            p.redraw();
+          }
+        })
       }
       const link_param = (slider_selector, text_selector, parse_param) => {
         const slider = p.select(slider_selector);
@@ -87,15 +101,13 @@ const s = (p) => {
       link_param("#param_nd", "#param_nd_text", (v) => {
         return (options.network.p_nd = v / 10000);
       });
+      link_param("#param_aging", "#param_aging_text", (v) => {
+        return (options.network.aging = 1.0 - (v/1000.0));
+      });
 
     }
   }
 
-  const makeGraph = () => {
-    physics.clear();
-    const n = options.network.num_nodes;
-    net = new Network(n);
-  }
   p.draw = () => {
     for(let f=0; f<3; f++) {
       for(let i=0; i<5; i++) {
@@ -124,6 +136,7 @@ const s = (p) => {
       this.net.for_each_node( (n) => {
         this._ND(n);
       });
+      this._LinkAging();
     }
 
     _LA(ni) {
@@ -199,6 +212,20 @@ const s = (p) => {
     _ND(ni) {
       if( Math.random() < options.network.p_nd ) {
         this.net.remove_links_around_node(ni.id);
+      }
+    }
+
+    _LinkAging() {
+      const removing_links = [];
+      const th = 0.9;
+      this.net.for_each_link( (l) => {
+        l.update_weight(l.w*options.network.aging);
+        if(l.w < th) {
+          removing_links.push( [l.n1.id, l.n2.id] );
+        }
+      });
+      for(let ij of removing_links) {
+        this.net.remove_link( ij[0], ij[1] );
       }
     }
   }
@@ -361,6 +388,12 @@ const s = (p) => {
       // if( ! this._is_consistent() ) {
       //   throw new Error("must not happen");
       // }
+    }
+
+    clear_links() {
+      this.for_each_node( (n) => {
+        this.remove_links_around_node(n.id);
+      });
     }
 
     for_each_node(fn) {
