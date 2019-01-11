@@ -148,6 +148,12 @@ div#modelParameters, div#modelContainer {
   margin-bottom: 8px;
 }
 
+div#modelParameters label {
+  display: block;
+  float: left;
+  width: 55px;
+}
+
 .button {
   background-color: #4CAF50; /* Green */
   border: none;

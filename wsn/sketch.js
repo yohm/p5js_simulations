@@ -24,10 +24,10 @@ const s = (p) => {
       min_distance_spring_length: 55,
     },
     display: {
-      node_color: "#555555",
+      node_color: "#BEC7D7",
       node_stroke_weight: 0,
-      node_radius: 2,
-      link_colors: ["#CBE6F3", "#FFF280", "#E06A3B"].map(s=> p.color(s)),
+      node_radius: 8,
+      link_colors: ["#CBE6F3", "#FFF280", "#EDAB90"].map(s=> p.color(s)),
       link_stroke_weight: 0.25,
       link_mid_weight: 200
     }
@@ -405,8 +405,8 @@ const s = (p) => {
     }
 
     display() {
-      for(const n of this._nodes ) { n.display(); }
       for(const l of this._links ) { l.display(); }
+      for(const n of this._nodes ) { n.display(); }
     }
   }
 }
