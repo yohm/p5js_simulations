@@ -14,4 +14,6 @@ A collection of simulation demos using p5.js.
     - [Bak-Sneppen model](/p5js_simulations/bak_sneppen/)
 - Weighted Social Network model
     - [WSN model](/p5js_simulations/wsn/)
+- Weighted Social Network model with nodal traits
+    - [WSN homophily model](/p5js_simulations/wsn_homophily/)
 
