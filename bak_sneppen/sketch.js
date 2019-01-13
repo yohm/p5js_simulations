@@ -1,4 +1,4 @@
-var s = function(p) {
+const s = (p) => {
 
   const canvas_s = {x: 640, y:640}; // canvas size
 
@@ -8,13 +8,13 @@ var s = function(p) {
 
   let sim;
 
-  p.setup = function() {
+  p.setup = () => {
     p.createCanvas(canvas_s.x, canvas_s.y);
   
     sim = new BakSneppen(params.N);
   }
 
-  p.draw = function() {
+  p.draw = () => {
     p.background(245);
     sim.update();
     sim.render(p);
@@ -103,7 +103,7 @@ var s = function(p) {
       }
     }
   }
-}
+};
 
 const myp5 = new p5(s,'bsContainer');
 
