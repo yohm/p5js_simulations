@@ -10,14 +10,13 @@ const s = (p) => {
 
   p.setup = () => {
     p.createCanvas(canvas_s.x, canvas_s.y);
-  
     sim = new BakSneppen(params.N);
   }
 
   p.draw = () => {
     p.background(245);
     sim.update();
-    sim.render(p);
+    sim.display(p);
   }
 
   class BakSneppen {
@@ -91,19 +90,35 @@ const s = (p) => {
       p.select("#avalanche").value(this.avalanche);
     }
 
+    display(p) {
+      const positions = this.fs.map( (f,idx) => {
+        return [(idx+0.5)*this.dx, (1.0-this.fs[idx])*canvas_s.y];
+      });
 
-    render(p) {
+      {
+        p.fill('#F9DFD5');
+        p.noStroke();
+        p.rect( this.dx*(this.last_idx-1), 0, 3*this.dx, canvas_s.y);
+      }
+      p.stroke(p.color('#DEDFEF'));
+      for(let i=0; i<this.N-1; i++) {
+        const p1 = positions[i];
+        const p2 = positions[(i+1)%this.N];
+        p.line(p1[0], p1[1], p2[0], p2[1]);
+      }
+
       for(let i=0; i<this.N; i++) {
-        p.fill('#81D674');
         if( i==this.last_idx || (i-1+this.N)%this.N==this.last_idx || (i+1)%this.N==this.last_idx ) {
           p.fill('#E06A3B');
+        } else {
+          p.fill('#81D674');
         }
-        p.rect(i*this.dx, 0, this.dx, this.fs[i] * canvas_s.y);
-        p.line(0, this.threshold*canvas_s.y, canvas_s.x, this.threshold*canvas_s.y);
+        p.ellipse(positions[i][0], positions[i][1], 8, 8);
       }
+      const ty = (1.0-this.threshold)*canvas_s.y;
+      p.line(0, ty, canvas_s.x, ty);
     }
   }
 };
 
 const myp5 = new p5(s,'bsContainer');
-
