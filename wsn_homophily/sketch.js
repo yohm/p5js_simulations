@@ -31,7 +31,8 @@ const s = (p) => {
       node_radius: 10,
       link_colors: ["#CBE6F3", "#FFF280", "#EDAB90"].map(s=> p.color(s)),
       link_stroke_weight: 0.25,
-      link_mid_weight: 200
+      link_mid_weight: 200,
+      background_color: "#25283F",
     }
   };
 
@@ -126,7 +127,7 @@ const s = (p) => {
       }
       physics.update();
     }
-    p.background(255);
+    p.background(options.display.background_color);
     
     wsn.display();
   }
