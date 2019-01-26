@@ -1,10 +1,10 @@
-const s = (p) => {
+const _x = (p) => {
 
   const canvas_s = {x: 640, y:640}; // canvas size
 
   const params = {
-    N: 160,
-    c: 0.05,
+    N: 50,
+    c: 0.1,
   }
   const node_color = (f) => {
     if(f >= 0) {
@@ -32,7 +32,7 @@ const s = (p) => {
 
   p.draw = () => {
     p.background('#FFFFFF');
-    // sim.update();
+    sim.update();
     sim.display(p);
   }
 
@@ -80,7 +80,8 @@ const s = (p) => {
         const r = Math.sqrt(dx*dx+dy*dy);
         let x2 = other.pos.x;
         let y2 = other.pos.y;
-        const r_th = 0.015;
+        const r_th = 0.9;
+        // const r_th = 0.02;
         if(r > r_th) {
           x2 = ((r-r_th)*this.pos.x + other.pos.x * r_th ) / r;
           y2 = ((r-r_th)*this.pos.y + other.pos.y * r_th ) / r;
@@ -107,76 +108,73 @@ const s = (p) => {
       this.N = N;
       this.c = c;
       this.dx = canvas_s.x / this.N;
-      this.species = new Array(this.N);
+      this.species = new Set();
       this.step = this.N;
       for(let i=0; i<this.N; i++) {
-        this.species[i] = new Species(i);
+        this.species.add(new Species(i));
       }
-      for(let i=0; i<this.N; i++) {
-        for(let j=0; j<this.N; j++) {
+      for(let si of this.species) {
+        for(let sj of this.species) {
+          if(si === sj) { continue; }
           if(Math.random() < this.c) {
-            this.species[i].make_incoming_link(this.species[j], rand_norm());
+            si.make_incoming_link(sj, rand_norm());
           }
         }
       }
 
       this.t = 0;
-      /*
       this.last_ex = 0;
       this.update_min();
-      this.last_idx = this.fmin_idx;
       this.avalanche = 0;
-      */
     }
 
     update_min() {
-      let fmin = 1.0;
-      let idx = 0;
-      for( let i=0; i<this.N; i++) {
-        if( this.fs[i] < fmin ) {
-          fmin = this.fs[i];
-          idx = i;
+      let fmin = 1000.0;
+      let min_s = null;
+      for(let s of this.species) {
+        if(s.f < fmin) {
+          fmin = s.f;
+          min_s = s;
         }
       }
       this.fmin = fmin;
-      this.fmin_idx = idx;
+      this.min_species = min_s;
     }
 
     update() {
       this.t += 1;
       const dt = (this.t - this.last_ex);
-      const speed = 0.11;
-      this.threshold = speed * Math.log(dt);
+      const speed = 0.02;
+      this.threshold = speed * Math.log(dt/2);
       if( this.threshold > this.fmin ) {
-        this.extinction(this.fmin_idx);
+        this.extinction(this.min_species);
+        this.add_one_species();
+        this.update_min();
+        this.step += 1;
       }
     }
 
-    near(i,j,dx) {
-      let b = (i>j)?i:j;
-      let s = (i>j)?j:i;
-      if( (b-s) < dx || (s+this.N-b) < dx ) {
-        return true;
-      }
-      else {
-        return false;
-      }
-    }
-
-    extinction(i) {
-      this.fs[i] = Math.random();
-      this.fs[(i+1)%this.N] = Math.random();
-      this.fs[(i-1+this.N)%this.N] = Math.random();
-      if( this.near(this.last_idx,i,4) ) {
-        this.avalanche += 1;
-      }
-      else {
-        this.avalanche = 1;
-      }
+    extinction(min_species) {
+      min_species.delete_interactions();
+      this.species.delete(min_species);
+      if( this.fmin <= 0.0 ) { this.avalanche += 1; }
+      else { this.avalanche = 1; }
       this.update_avalanche_count();
       this.update_min();
       this.last_ex = this.t;
-      this.last_idx = i;
+    }
+
+    add_one_species() {
+      let si = new Species(this.step);
+      for(let sj of this.species) {
+        if( Math.random() < this.c ) {
+          si.make_incoming_link(sj, rand_norm());
+        }
+        if( Math.random() < this.c ) {
+          sj.make_incoming_link(si, rand_norm());
+        }
+      }
+      this.species.add(si);
     }
 
     update_avalanche_count() {
@@ -197,4 +195,4 @@ const s = (p) => {
   }
 };
 
-const myp5 = new p5(s,'bsContainer');
+const myp5 = new p5(_x,'bsContainer');
