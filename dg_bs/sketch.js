@@ -76,24 +76,31 @@ const _x = (p) => {
 
     display_links(p) {
       for(let [other, w] of this.incoming) {
+        p.stroke(link_color(w));
+        /*
         const dx = (other.pos.x-this.pos.x), dy = (other.pos.y-this.pos.y);
         const r = Math.sqrt(dx*dx+dy*dy);
         let x2 = other.pos.x;
         let y2 = other.pos.y;
-        const r_th = 0.9;
-        // const r_th = 0.02;
+        const r_th = 0.02;
         if(r > r_th) {
           x2 = ((r-r_th)*this.pos.x + other.pos.x * r_th ) / r;
           y2 = ((r-r_th)*this.pos.y + other.pos.y * r_th ) / r;
         }
-        p.stroke(link_color(w));
         p.line(canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, canvas_s.x*x2, canvas_s.y*y2 );
+        */
+        p.line(canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, canvas_s.x*other.pos.x, canvas_s.y*other.pos.y);
       }
     }
 
     display_node(p) {
       p.fill( node_color(this.f) );
       p.ellipse( canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, 8 );
+    }
+
+    display_dead_node(p, radius) {
+      p.fill( "red" );
+      p.ellipse(canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, radius);
     }
   }
 
@@ -109,6 +116,7 @@ const _x = (p) => {
       this.c = c;
       this.dx = canvas_s.x / this.N;
       this.species = new Set();
+      this.dying = new Set();
       this.step = this.N;
       for(let i=0; i<this.N; i++) {
         this.species.add(new Species(i));
@@ -144,7 +152,7 @@ const _x = (p) => {
     update() {
       this.t += 1;
       const dt = (this.t - this.last_ex);
-      const speed = 0.02;
+      const speed = 0.03;
       this.threshold = speed * Math.log(dt/2);
       if( this.threshold > this.fmin ) {
         this.extinction(this.min_species);
@@ -157,6 +165,8 @@ const _x = (p) => {
     extinction(min_species) {
       min_species.delete_interactions();
       this.species.delete(min_species);
+      this.dying.add(min_species);
+      min_species.dead_t = this.t;
       if( this.fmin <= 0.0 ) { this.avalanche += 1; }
       else { this.avalanche = 1; }
       this.update_avalanche_count();
@@ -190,6 +200,11 @@ const _x = (p) => {
       }
       for(let s of this.species) {
         s.display_node(p);
+      }
+      for(let s of this.dying) {
+        const r = 12 - 0.1 * (this.t - s.dead_t);
+        if(r > 0) { s.display_dead_node(p,r); }
+        else { this.dying.delete(s); }
       }
     }
   }
