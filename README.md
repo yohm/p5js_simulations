@@ -12,6 +12,8 @@ A collection of simulation demos using p5.js.
     - [site percolation](/p5js_simulations/site_percolation/)
 - Bak-Sneppen model
     - [Bak-Sneppen model](/p5js_simulations/bak_sneppen/)
+- An evolution model bridging BS and DG models
+    - [Bak-Sneppen model](/p5js_simulations/dg_bs/)
 - Weighted Social Network model
     - [WSN model](/p5js_simulations/wsn/)
 - Weighted Social Network model with nodal traits
