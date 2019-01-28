@@ -45,7 +45,6 @@ const _x = (p) => {
   }
 
   p.draw = () => {
-    // p.background('#FFFFFF');
     p.background("#25283F");
     sim.update();
     sim.display(p);
@@ -116,7 +115,6 @@ const _x = (p) => {
     }
 
     display_dead_node(p, radius) {
-      // p.fill("#DA5019");
       p.fill("#FFE600");
       p.ellipse(canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, radius);
     }
@@ -131,26 +129,26 @@ const _x = (p) => {
 
     constructor(params) {
       this.params = params;
-      this.dx = canvas_s.x / this.N;
       this.species = new Set();
       this.dying = new Set();
-      this.step = this.N;
+      this.step = this.params.N0;
       for(let i=0; i<this.params.N0; i++) {
         this.species.add(new Species(i));
       }
       for(let si of this.species) {
         for(let sj of this.species) {
           if(si === sj) { continue; }
-          if(Math.random() < this.c) {
+          if(Math.random() < this.params.c) {
             si.make_incoming_link(sj, rand_norm());
           }
         }
       }
 
       this.t = 0;
-      this.last_ex = 0;
+      this.last_event = 0;
       this.update_min();
       this.avalanche = 0;
+      this.dt_from_last_extinction = 0;
     }
 
     update_min() {
@@ -169,18 +167,25 @@ const _x = (p) => {
 
     update() {
       this.t += 1;
-      const dt = (this.t - this.last_ex);
-      const speed = 0.03;
-      const threshold = speed * Math.log(dt/10);
+      const dt = (this.t - this.last_event);
+      const speed = 0.04; // == f0
+      const threshold = speed * Math.log(dt/20);
       if(this.fmin < this.f_mig) {
         if( threshold > this.fmin ) {
           this.extinction(this.min_species);
+          this.dt_from_last_extinction += Math.exp(this.fmin/speed);
+          if(this.dt_from_last_extinction > 1) { this.avalanche = 1; }
+          else { this.avalanche += 1;}
+          this.dt_from_last_extinction = 0;
+          this.last_event = this.t;
         }
       }
       else {
         if( threshold > this.f_mig ) {
+          this.dt_from_last_extinction += Math.exp(this.f_mig/speed);
           this.add_one_species();
           this.step += 1;
+          this.last_event = this.t;
         }
       }
     }
@@ -190,10 +195,7 @@ const _x = (p) => {
       this.species.delete(min_species);
       this.dying.add(min_species);
       min_species.dead_t = this.t;
-      if( this.fmin <= 0.0 ) { this.avalanche += 1; }
-      else { this.avalanche = 1; }
       this.update_min();
-      this.last_ex = this.t;
       this.update_avalanche_count();
       this.update_n_species();
     }
@@ -210,6 +212,7 @@ const _x = (p) => {
       }
       this.species.add(si);
       this.update_min();
+      this.update_n_species();
     }
 
     update_avalanche_count() {
