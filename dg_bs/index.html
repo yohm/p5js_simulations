@@ -24,8 +24,15 @@
           The model is a generalization of the Bak-Sneppen (BS) model and the Dynamical Graph (DG) model.
           </p>
         <div id='modelParameters'>
+          <label for="param_mu">mu</label>
+          <input type="range" min="-5" max="-1" step="1" value="-5" id="param_mu" style="width: 60%;" />
+          <output id="param_mu_text"></output><br/>
+
           <label># of consecutive extinctions :</label>
           <output id="avalanche">0</output>
+          <br/>
+          <label># of species :</label>
+          <output id="n_species">0</output>
         </div>
         <div class='simulation' id='bsContainer'></div>
       </article>

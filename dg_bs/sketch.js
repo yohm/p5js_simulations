@@ -3,8 +3,9 @@ const _x = (p) => {
   const canvas_s = {x: 640, y:640}; // canvas size
 
   const params = {
-    N: 50,
-    c: 0.1,
+    N0: 50,
+    c: 0.2,
+    mu: 0.1,
   }
   const node_color = (f) => {
     if(f >= 0) {
@@ -27,11 +28,25 @@ const _x = (p) => {
 
   p.setup = () => {
     p.createCanvas(canvas_s.x, canvas_s.y);
-    sim = new DG_BS(params.N, params.c);
+    sim = new DG_BS(params);
+
+    const link_param = (slider_selector, text_selector, parse_param) => {
+      const slider = p.select(slider_selector);
+      const on_changed = () => { p.select(text_selector).value(parse_param(slider.value())); };
+      slider.changed(on_changed);
+      on_changed();
+    }
+    link_param("#param_mu", "#param_mu_text", (v) => {
+      if(v < -4) {params.mu = 0; }
+      else { params.mu = 10**v; }
+      sim.update_min();
+      return params.mu;
+    });
   }
 
   p.draw = () => {
-    p.background('#FFFFFF');
+    // p.background('#FFFFFF');
+    p.background("#25283F");
     sim.update();
     sim.display(p);
   }
@@ -76,6 +91,7 @@ const _x = (p) => {
 
     display_links(p) {
       for(let [other, w] of this.incoming) {
+        p.strokeWeight(0.3);
         p.stroke(link_color(w));
         /*
         const dx = (other.pos.x-this.pos.x), dy = (other.pos.y-this.pos.y);
@@ -95,11 +111,13 @@ const _x = (p) => {
 
     display_node(p) {
       p.fill( node_color(this.f) );
+      p.noStroke();
       p.ellipse( canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, 8 );
     }
 
     display_dead_node(p, radius) {
-      p.fill( "red" );
+      // p.fill("#DA5019");
+      p.fill("#FFE600");
       p.ellipse(canvas_s.x*this.pos.x, canvas_s.y*this.pos.y, radius);
     }
   }
@@ -111,14 +129,13 @@ const _x = (p) => {
 
   class DG_BS {
 
-    constructor(N,c) {
-      this.N = N;
-      this.c = c;
+    constructor(params) {
+      this.params = params;
       this.dx = canvas_s.x / this.N;
       this.species = new Set();
       this.dying = new Set();
       this.step = this.N;
-      for(let i=0; i<this.N; i++) {
+      for(let i=0; i<this.params.N0; i++) {
         this.species.add(new Species(i));
       }
       for(let si of this.species) {
@@ -147,18 +164,24 @@ const _x = (p) => {
       }
       this.fmin = fmin;
       this.min_species = min_s;
+      this.f_mig = this.params.mu * (this.species.size - this.params.N0);
     }
 
     update() {
       this.t += 1;
       const dt = (this.t - this.last_ex);
       const speed = 0.03;
-      this.threshold = speed * Math.log(dt/2);
-      if( this.threshold > this.fmin ) {
-        this.extinction(this.min_species);
-        this.add_one_species();
-        this.update_min();
-        this.step += 1;
+      const threshold = speed * Math.log(dt/10);
+      if(this.fmin < this.f_mig) {
+        if( threshold > this.fmin ) {
+          this.extinction(this.min_species);
+        }
+      }
+      else {
+        if( threshold > this.f_mig ) {
+          this.add_one_species();
+          this.step += 1;
+        }
       }
     }
 
@@ -169,26 +192,32 @@ const _x = (p) => {
       min_species.dead_t = this.t;
       if( this.fmin <= 0.0 ) { this.avalanche += 1; }
       else { this.avalanche = 1; }
-      this.update_avalanche_count();
       this.update_min();
       this.last_ex = this.t;
+      this.update_avalanche_count();
+      this.update_n_species();
     }
 
     add_one_species() {
       let si = new Species(this.step);
       for(let sj of this.species) {
-        if( Math.random() < this.c ) {
+        if( Math.random() < this.params.c ) {
           si.make_incoming_link(sj, rand_norm());
         }
-        if( Math.random() < this.c ) {
+        if( Math.random() < this.params.c ) {
           sj.make_incoming_link(si, rand_norm());
         }
       }
       this.species.add(si);
+      this.update_min();
     }
 
     update_avalanche_count() {
       p.select("#avalanche").value(this.avalanche);
+    }
+
+    update_n_species() {
+      p.select("#n_species").value(this.species.size);
     }
 
     display(p) {
@@ -202,7 +231,7 @@ const _x = (p) => {
         s.display_node(p);
       }
       for(let s of this.dying) {
-        const r = 12 - 0.1 * (this.t - s.dead_t);
+        const r = 24 - 0.5 * (this.t - s.dead_t);
         if(r > 0) { s.display_dead_node(p,r); }
         else { this.dying.delete(s); }
       }
