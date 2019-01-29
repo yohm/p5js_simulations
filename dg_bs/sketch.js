@@ -179,7 +179,9 @@ const _x = (p) => {
       this.f_mig = this.params.mu * (this.species.size - this.params.N0);
       this.last_event = this.t;
       const f = (this.fmin < this.f_mig) ? this.fmin : this.f_mig;
-      this.next_event = this._calc_tau(f) + this.t;
+      let dt = this._calc_tau(f);
+      if(dt > 300) { dt = 300; }  // maximum wait time is 300 frames
+      this.next_event = dt + this.t;
     }
 
     update() {
