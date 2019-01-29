@@ -154,9 +154,15 @@ const _x = (p) => {
 
       this.t = 0;
       this.last_event = 0;
+      this.next_event = 0;
       this.update_min();
       this.avalanche = 0;
       this.dt_from_last_extinction = 0;
+    }
+
+    _calc_tau(f) {
+      const f0 = 0.04, tau0 = 20;
+      return tau0 * Math.exp(f/f0);
     }
 
     update_min() {
@@ -171,26 +177,23 @@ const _x = (p) => {
       this.fmin = fmin;
       this.min_species = min_s;
       this.f_mig = this.params.mu * (this.species.size - this.params.N0);
+      this.last_event = this.t;
+      const f = (this.fmin < this.f_mig) ? this.fmin : this.f_mig;
+      this.next_event = this._calc_tau(f) + this.t;
     }
 
     update() {
       this.t += 1;
-      const dt = (this.t - this.last_event);
-      const speed = 0.04; // == f0
-      const threshold = speed * Math.log(dt/20);
-      if(this.fmin < this.f_mig) {
-        if( threshold > this.fmin ) {
+      if(this.t >= this.next_event) {
+        if(this.fmin < this.f_mig) {
           this.extinction(this.min_species);
-          this.dt_from_last_extinction += Math.exp(this.fmin/speed);
+          this.dt_from_last_extinction += this._calc_tau(this.fmin);
           if(this.dt_from_last_extinction > 1) { this.avalanche = 1; }
           else { this.avalanche += 1;}
           this.dt_from_last_extinction = 0;
-          this.last_event = this.t;
         }
-      }
-      else {
-        if( threshold > this.f_mig ) {
-          this.dt_from_last_extinction += Math.exp(this.f_mig/speed);
+        else {
+          this.dt_from_last_extinction += this._calc_tau(this.f_mig);
           this.add_one_species();
           this.step += 1;
           this.last_event = this.t;
