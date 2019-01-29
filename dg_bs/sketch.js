@@ -30,18 +30,26 @@ const _x = (p) => {
     p.createCanvas(canvas_s.x, canvas_s.y);
     sim = new DG_BS(params);
 
-    const link_param = (slider_selector, text_selector, parse_param) => {
-      const slider = p.select(slider_selector);
-      const on_changed = () => { p.select(text_selector).value(parse_param(slider.value())); };
-      slider.changed(on_changed);
-      on_changed();
+    {
+      const link_param = (slider_selector, text_selector, parse_param) => {
+        const slider = p.select(slider_selector);
+        const on_changed = () => { p.select(text_selector).value(parse_param(slider.value())); };
+        slider.changed(on_changed);
+        on_changed();
+      }
+      link_param("#param_mu", "#param_mu_text", (v) => {
+        if(v < -4) {params.mu = 0; }
+        else { params.mu = 10**v; }
+        sim.update_min();
+        return params.mu;
+      });
     }
-    link_param("#param_mu", "#param_mu_text", (v) => {
-      if(v < -4) {params.mu = 0; }
-      else { params.mu = 10**v; }
-      sim.update_min();
-      return params.mu;
-    });
+    {
+      const rbtn = p.select("#reset_button");
+      rbtn.mouseClicked( () => {
+        sim = new DG_BS(params);
+      });
+    }
   }
 
   p.draw = () => {

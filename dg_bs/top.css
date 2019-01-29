@@ -140,3 +140,11 @@ div#modelParameters, div.simulation {
   margin: auto;
 }
 
+.button {
+  cursor: pointer;
+  padding: 8px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  border-radius: 8px;
+}
