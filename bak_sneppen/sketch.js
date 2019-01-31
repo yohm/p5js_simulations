@@ -52,8 +52,9 @@ const s = (p) => {
     update() {
       this.t += 1;
       const dt = (this.t - this.last_ex);
-      const speed = 0.11;
-      this.threshold = speed * Math.log(dt);
+      const speed = 0.075;
+      const dt0 = 0.08;
+      this.threshold = speed * Math.log(dt/dt0);
       if( this.threshold > this.fmin ) {
         this.extinction(this.fmin_idx);
       }
