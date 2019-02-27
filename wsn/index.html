@@ -12,29 +12,26 @@
   </head>
   <body>
     <header>
-      <h1>Social Network Simulator</h1>
+      <h1>Weighted Social Network Model</h1>
     </header>
 
     <main>
       <article>
-        <p>
-          A simulator of Weighted Social Network Model
-        </p>
         <div id='modelParameters'>
           <label for="param_p_ga">p_GA</label>
           <input type="range" min="1" max="10" step="1" value="5" id="param_p_ga" style="width: 60%;" />
           <output id="param_p_ga_text"></output><br/>
           <label for="param_p_la">p_LA</label>
-          <input type="range" min="0" max="200" step="5" value="50" id="param_p_la" style="width: 60%;" />
+          <input type="range" min="0" max="200" step="50" value="50" id="param_p_la" style="width: 60%;" />
           <output id="param_p_la_text"></output><br/>
           <label for="param_dw">dw</label>
-          <input type="range" min="0" max="10" step="1" value="10" id="param_dw" style="width: 60%;" />
+          <input type="range" min="0" max="10" step="2" value="10" id="param_dw" style="width: 60%;" />
           <output id="param_dw_text"></output><br/>
           <label for="param_ld">p_LD</label>
-          <input type="range" min="0" max="50" step="5" value="30" id="param_ld" style="width: 60%;" />
+          <input type="range" min="0" max="50" step="10" value="50" id="param_ld" style="width: 60%;" />
           <output id="param_ld_text"></output><br/>
           <label for="param_nd">p_ND</label>
-          <input type="range" min="0" max="20" step="2" value="0" id="param_nd" style="width: 60%;" />
+          <input type="range" min="0" max="20" step="4" value="0" id="param_nd" style="width: 60%;" />
           <output id="param_nd_text"></output><br/>
           <label for="param_aging">aging</label>
           <input type="range" min="0" max="10" step="2" value="0" id="param_aging" style="width: 60%;" />
@@ -45,6 +42,39 @@
           <span id="running_status" style="margin:10px"></span>
         </div>
         <div id='modelContainer'></div>
+        <p>
+          A simulator of the Weighted Social Network (WSN) model, which was proposed in Kumpula et al.[1].
+          It considers an undirected weighted network of N nodes, with links between them being updated by the following three mechanisms.
+        </p>
+        <ul>
+          <li>Local Attachment (LA)</li>
+          <li>Global Attachment (GA)</li>
+          <li>Link Deletion (LD) (or Node Deletion / Link Aging)</li>
+        </ul>
+        <p>
+          LA and GA respectively correspond to triadic and cyclic closures, which have been empirically observed to be the fundamental mechanisms for creating social ties.
+          In addition to these mechanisms, a link reinforcement was introduced to correspond to the general obesrvation that social ties get stronger when they are used.
+        </p>
+        <p>
+          The model shows a phase transition, when the link reinformcemnt is introduced, from a homogeneous random network to a modular network having the Granovetterian weight-topology relationship.
+          Change the reinforcement parameter dw (which is denoted as delta in [1]) from 0 to 1, and see how the emergent network looks like.<br/>
+          <button id="set_dw_0" class="button" style="width: 100px;">Set dw=0</button>
+          <button id="set_dw_1" class="button" style="width: 100px;">Set dw=1</button>
+        </p>
+        <p>
+          In social networks of human individuals, social relationships do not necessarily last forever as they can either fade gradually with time, resulting in “link aging,” or terminate abruptly, causing “link deletion,” as even old friendships may cease.
+          In Murase et al.[2], WSN model is studied where several ways by which a link termination takes place is introduced.
+          If we adopt the link aging, we get a more modular structure with more homogeneously distributed link weights within communities than when link deletion is used.
+          By investigating distributions and relations of various network characteristics, we find that the empirical findings are better reproduced with the link deletion model. This indicates that link deletion plays a more prominent role in organizing social networks than link aging.<br/>
+          <button id="set_ld_params" class="button" style="width: 200px;">Set parameters for Link Deletion model</button>
+          <button id="set_nd_params" class="button" style="width: 200px;">Set parameters for Node Deletion model</button>
+          <button id="set_aging_params" class="button" style="width: 200px;">Set parameters for Link Aging model</button>
+        </p>
+        References:
+        <ul>
+          <li><a href="https://journals.aps.org/prl/abstract/10.1103/PhysRevLett.99.228701">[1] Kumpula, Jussi M., et al. "Emergence of communities in weighted networks." Physical review letters 99.22 (2007): 228701.</a></li>
+          <li><a href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0133005">[2] Murase, Yohsuke, et al. "Modeling the role of relationship fading and breakup in social network formation." PloS one 10.7 (2015): e0133005.</a></li>
+        </ul>
       </article>
       <a href="..">Back</a>
     </main>

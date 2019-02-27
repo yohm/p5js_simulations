@@ -79,33 +79,66 @@ const s = (p) => {
           else {
             p.redraw();
           }
-        })
+        });
       }
       const link_param = (slider_selector, text_selector, parse_param) => {
         const slider = p.select(slider_selector);
         const on_changed = () => { p.select(text_selector).value(parse_param(slider.value())); };
         slider.changed(on_changed);
-        on_changed()
+        on_changed();
+        const setter = (val) => {
+          slider.value(val);
+          on_changed();
+        }
+        return setter;
       }
-      link_param("#param_p_la", "#param_p_la_text", (v) => {
+      const set_p_la = link_param("#param_p_la", "#param_p_la_text", (v) => {
         return (options.network.p_la = v / 1000.0);
       });
-      link_param("#param_p_ga", "#param_p_ga_text", (v) => {
+      const set_p_ga = link_param("#param_p_ga", "#param_p_ga_text", (v) => {
         return (options.network.p_ga = v / 10000.0);
       });
-      link_param("#param_dw", "#param_dw_text", (v) => {
+      const set_dw = link_param("#param_dw", "#param_dw_text", (v) => {
         return (options.network.dw = v / 10);
       });
-      link_param("#param_ld", "#param_ld_text", (v) => {
+      const set_ld = link_param("#param_ld", "#param_ld_text", (v) => {
         return (options.network.p_ld = v / 10000);
       });
-      link_param("#param_nd", "#param_nd_text", (v) => {
+      const set_nd = link_param("#param_nd", "#param_nd_text", (v) => {
         return (options.network.p_nd = v / 10000);
       });
-      link_param("#param_aging", "#param_aging_text", (v) => {
+      const set_aging = link_param("#param_aging", "#param_aging_text", (v) => {
         return (options.network.aging = 1.0 - (v/1000.0));
       });
 
+      const set_param = (target) => {
+        set_p_la(target.p_la);
+        set_p_ga(target.p_ga);
+        set_dw(target.dw);
+        set_ld(target.ld);
+        set_nd(target.nd);
+        set_aging(target.aging);
+      }
+      p.select("#set_dw_0").mouseClicked( () => {
+        const target = { p_ga: 5, p_la: 50, dw: 0, ld: 50, nd: 0, aging: 0 }
+        set_param(target);
+      });
+      p.select("#set_dw_1").mouseClicked( () => {
+        const target = { p_ga: 5, p_la: 50, dw: 10, ld: 50, nd: 0, aging: 0 }
+        set_param(target);
+      });
+      p.select("#set_ld_params").mouseClicked( () => {
+        const target = { p_ga: 5, p_la: 50, dw: 10, ld: 50, nd: 0, aging: 0 }
+        set_param(target);
+      });
+      p.select("#set_nd_params").mouseClicked( () => {
+        const target = { p_ga: 5, p_la: 50, dw: 10, ld: 0, nd: 20, aging: 0 }
+        set_param(target);
+      });
+      p.select("#set_aging_params").mouseClicked( () => {
+        const target = { p_ga: 5, p_la: 50, dw: 10, ld: 0, nd: 0, aging: 10 }
+        set_param(target);
+      });
     }
   }
 
