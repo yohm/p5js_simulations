@@ -80,6 +80,11 @@ const s = (p) => {
             p.redraw();
           }
         });
+
+        const sbtn = p.select("#snapshot_button");
+        sbtn.mouseClicked( () => {
+          p.saveCanvas("out","png");
+        });
       }
       const link_param = (slider_selector, text_selector, parse_param) => {
         const slider = p.select(slider_selector);
