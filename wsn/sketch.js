@@ -29,7 +29,7 @@ const s = (p) => {
       node_radius: 8,
       link_colors: ["#CBE6F3", "#FFF280", "#EDAB90"].map(s=> p.color(s)),
       link_stroke_weight: 0.25,
-      link_mid_weight: 200,
+      link_mid_weight: 50,
       background_color: "#25283F",
     }
   };
@@ -157,6 +157,7 @@ const s = (p) => {
     p.background(options.display.background_color);
     
     net.display();
+    console.log( net.average_degree() );
   }
 
   class WSN {
@@ -377,6 +378,12 @@ const s = (p) => {
 
     size() { return this._nodes.length; }
     node(i) { return this._nodes[i]; }
+    average_degree() {
+      let k = 0.0;
+      for(let n of this._nodes ) { k += n.degree(); }
+      k /= this._nodes.length;
+      return k;
+    }
 
     add_link(i, j, w = 1) {
       const ni = this.node(i), nj = this.node(j);
